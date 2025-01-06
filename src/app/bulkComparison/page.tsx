@@ -27,10 +27,6 @@ export default function ComparisonPage() {
       alert('Invalid email format.');
       return;
     }
-    if (emailList.includes(email)) {
-      alert('This email is already in the list.');
-      return;
-    }
     setEmailList((prev) => [...prev, email]);
     setEmail('');
   };

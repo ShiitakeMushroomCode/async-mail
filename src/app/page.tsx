@@ -8,18 +8,18 @@ export default function Home() {
     <div className={styles.container}>
       <h1 className={styles.title}>Email Management Dashboard</h1>
       <div>
-        <Link href="/single">
+        {/* <Link href="/single">
           <button className={styles.button}>Single Email Sender</button>
-        </Link>
+        </Link> */}
         <Link href="/bulk">
           <button className={styles.button}>Bulk Email Sender</button>
         </Link>
         <Link href="/bulkComparison">
           <button className={styles.button}>Comparison Email Sending</button>
         </Link>
-        <Link href="/results">
+        {/* <Link href="/results">
           <button className={styles.button}>Email Results</button>
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
