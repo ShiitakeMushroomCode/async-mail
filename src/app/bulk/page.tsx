@@ -31,9 +31,9 @@ export default function BulkEmailPage() {
     setEmail('');
   };
 
-  // 이메일 삭제
-  const removeEmail = (emailToRemove: string) => {
-    setEmailList((prev) => prev.filter((e) => e !== emailToRemove));
+  // 이메일 삭제 (인덱스 기반)
+  const removeEmail = (indexToRemove: number) => {
+    setEmailList((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
   // 이메일 발송
@@ -80,7 +80,7 @@ export default function BulkEmailPage() {
           <li key={index} className={styles.emailItem}>
             <span>{e}</span>
             <button
-              onClick={() => removeEmail(e)}
+              onClick={() => removeEmail(index)}
               className={styles.removeButton}
             >
               X

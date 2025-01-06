@@ -31,9 +31,9 @@ export default function ComparisonPage() {
     setEmail('');
   };
 
-  // 이메일 삭제
-  const removeEmail = (emailToRemove: string) => {
-    setEmailList((prev) => prev.filter((e) => e !== emailToRemove));
+  // 이메일 삭제 (인덱스 기반)
+  const removeEmail = (indexToRemove: number) => {
+    setEmailList((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
   // 비동기 방식 테스트
@@ -96,7 +96,7 @@ export default function ComparisonPage() {
           <li key={index} className={styles.emailItem}>
             <span>{e}</span>
             <button
-              onClick={() => removeEmail(e)}
+              onClick={() => removeEmail(index)}
               className={styles.removeButton}
             >
               X
