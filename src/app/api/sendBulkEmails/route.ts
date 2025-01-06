@@ -1,5 +1,7 @@
 import { emailQueue } from '@/lib/queue.server';
 import { NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
+
 
 export async function POST(req: Request) {
   try {
@@ -9,21 +11,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid email list' }, { status: 400 });
     }
 
+    // 고유한 테스트 ID 생성
+    const testId = uuidv4();
+
+    // 큐에 단일 작업으로 추가
     const enqueueStart = Date.now();
-
-    // 비동기 방식: 큐에 작업 추가
-    await Promise.all(
-      emails.map((email) =>
-        emailQueue.add('send-email', { to: email, subject, text })
-      )
-    );
-
+    await emailQueue.add('send-bulk-emails', { emails, subject, text, testId });
     const enqueueEnd = Date.now();
+
     const enqueueTime = enqueueEnd - enqueueStart;
 
     return NextResponse.json({
       message: 'Emails queued successfully',
       enqueueTime,
+      testId,
     });
   } catch (error) {
     console.error('Failed to queue emails:', error);

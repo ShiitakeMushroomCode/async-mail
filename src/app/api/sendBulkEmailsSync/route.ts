@@ -1,6 +1,7 @@
 import transporter from '@/lib/mail';
 import { NextResponse } from 'next/server';
 
+
 export async function POST(req: Request) {
   try {
     const { emails, subject, text } = await req.json();
@@ -9,27 +10,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid email list' }, { status: 400 });
     }
 
-    const sendStart = Date.now();
+    const syncStart = Date.now();
 
-    // 동기 방식: 한 번에 직접 발송
+    // 동기적으로 이메일 발송
     for (const email of emails) {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: email,
-        subject,
-        text,
+        subject: subject,
+        text: text,
       });
+      console.log(`Email sent to ${email}`);
     }
 
-    const sendEnd = Date.now();
-    const sendTime = sendEnd - sendStart;
+    const syncEnd = Date.now();
+    const syncTime = syncEnd - syncStart;
 
     return NextResponse.json({
-      message: 'Emails sent successfully',
-      sendTime,
+      message: 'Emails sent synchronously successfully',
+      syncTime,
     });
-  } catch (error) {
-    console.error('Failed to send emails:', error);
-    return NextResponse.json({ error: 'Failed to send emails' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Failed to send emails synchronously:', error);
+    return NextResponse.json({ error: 'Failed to send emails synchronously' }, { status: 500 });
   }
 }
