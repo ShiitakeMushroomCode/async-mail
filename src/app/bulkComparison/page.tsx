@@ -30,17 +30,17 @@ const ResultsTable = ({ results }: { results: any[] }) => (
   <table className={styles.resultsTable}>
     <thead>
       <tr>
-        <th>Test Number</th>
-        <th>Async Enqueue Time (ms)</th>
-        <th>Sync Time (ms)</th>
+        <th>테스트넘버</th>
+        <th>타입</th>
+        <th>시간 (ms)</th>
       </tr>
     </thead>
     <tbody>
       {results.map((result, index) => (
         <tr key={index}>
           <td>{result.test}</td>
-          <td>{result.asyncEnqueueTime !== 'N/A' ? `${result.asyncEnqueueTime} ms` : 'N/A'}</td>
-          <td>{result.syncTime !== 'N/A' ? `${result.syncTime} ms` : 'N/A'}</td>
+          <td>{result.type}</td>
+          <td>{result.time !== 'N/A' ? `${result.time} ms` : 'N/A'}</td>
         </tr>
       ))}
     </tbody>
@@ -132,6 +132,7 @@ export default function ComparisonPage() {
             const maxAttempts = 20;
             const interval = 1000; // 1초 간격
             let attempts = 0;
+            const pollStart = performance.now();
 
             return new Promise<void>((resolve) => {
               const intervalId = setInterval(async () => {
@@ -144,12 +145,14 @@ export default function ComparisonPage() {
                     const { status } = resultData;
                     if (status === 'Completed' || status.startsWith('Failed')) {
                       clearInterval(intervalId);
+                      const pollEnd = performance.now();
+                      const elapsedTime = pollEnd - pollStart;
                       setResults((prev) => [
                         ...prev,
                         {
                           test: `Test ${newTestCount}`,
-                          asyncEnqueueTime: asyncEnqueueTime.toFixed(2),
-                          syncTime: 'N/A',
+                          type: 'Async',
+                          time: elapsedTime.toFixed(2),
                         },
                       ]);
                       resolve();
@@ -160,12 +163,14 @@ export default function ComparisonPage() {
 
                   if (attempts >= maxAttempts) {
                     clearInterval(intervalId);
+                    const pollEnd = performance.now();
+                    const elapsedTime = pollEnd - pollStart;
                     setResults((prev) => [
                       ...prev,
                       {
                         test: `Test ${newTestCount}`,
-                        asyncEnqueueTime: asyncEnqueueTime.toFixed(2),
-                        syncTime: 'Timeout',
+                        type: 'Async',
+                        time: elapsedTime.toFixed(2),
                       },
                     ]);
                     resolve();
@@ -206,8 +211,8 @@ export default function ComparisonPage() {
             ...prev,
             {
               test: `Test ${newTestCount}`,
-              asyncEnqueueTime: 'N/A',
-              syncTime: syncElapsedTime.toFixed(2),
+              type: 'Sync',
+              time: syncElapsedTime.toFixed(2),
             },
           ]);
         } else {
